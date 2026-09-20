@@ -3,11 +3,22 @@ import random
 import discord
 from discord.ext import commands
 
+# =========================
+# BOT SETUP
+# =========================
+
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(command_prefix=";", intents=intents)
+bot = commands.Bot(
+    command_prefix=";",
+    intents=intents
+)
 
+
+# =========================
+# BOT READY
+# =========================
 
 @bot.event
 async def on_ready():
@@ -74,7 +85,6 @@ async def servericon(ctx):
         embed.set_image(url=icon.url)
 
         await ctx.send(embed=embed)
-
     else:
         await ctx.send("this server doesn't have an icon 😭")
 
@@ -160,50 +170,63 @@ responses = [
 
 @bot.event
 async def on_message(message):
+
+    # Ignore the bot itself
     if message.author == bot.user:
         return
 
     content = message.content.lower()
 
-    # Start conversation with "tung tung" + bot mention
+    # Start Tung Tung conversation
     if bot.user in message.mentions and "tung tung" in content:
         await message.channel.send(
             f"tung tung {message.author.mention} 😭 what's up?"
         )
 
-    # Continue conversation when someone replies to the bot
+    # Continue conversation when replying to the bot
     elif message.reference and message.reference.resolved:
+
         replied_message = message.reference.resolved
 
         if replied_message.author == bot.user:
-            await message.channel.send(random.choice(responses))
+            await message.channel.send(
+                random.choice(responses)
+            )
 
+    # Keep normal commands working
     await bot.process_commands(message)
 
 
-# =========================
-# START BOT
-# =========================
 # =========================
 # FUN COMMANDS
 # =========================
 
 @bot.command()
 async def coinflip(ctx):
-    result = random.choice(["heads 🪙", "tails 🪙"])
+    result = random.choice([
+        "heads 🪙",
+        "tails 🪙"
+    ])
+
     await ctx.send(f"it's **{result}**")
 
 
 @bot.command()
 async def dice(ctx):
     number = random.randint(1, 6)
-    await ctx.send(f"🎲 you rolled **{number}**")
+
+    await ctx.send(
+        f"🎲 you rolled **{number}**"
+    )
 
 
 @bot.command()
 async def rate(ctx, *, thing):
     rating = random.randint(1, 10)
-    await ctx.send(f"i rate **{thing}** a **{rating}/10** 😭")
+
+    await ctx.send(
+        f"i rate **{thing}** a **{rating}/10** 😭"
+    )
 
 
 @bot.command()
@@ -212,15 +235,19 @@ async def ship(ctx, member1: discord.Member, member2: discord.Member):
 
     if percentage >= 80:
         response = "THEY'RE ACTUALLY COOKING 🔥❤️"
+
     elif percentage >= 50:
         response = "hmm there's potential 👀"
+
     elif percentage >= 20:
         response = "it's looking rough 😭"
+
     else:
         response = "bro just stay friends 💀"
 
     await ctx.send(
-        f"💘 **{member1.display_name} + {member2.display_name}** = "
+        f"💘 **{member1.display_name} + "
+        f"{member2.display_name}** = "
         f"**{percentage}%**\n{response}"
     )
 
@@ -243,19 +270,30 @@ async def eightball(ctx, *, question):
         "tung tung says no 💀"
     ]
 
-    await ctx.send(f"🎱 **{random.choice(answers)}**")
+    await ctx.send(
+        f"🎱 **{random.choice(answers)}**"
+    )
 
 
 @bot.command()
 async def choose(ctx, *, options):
-    choices = [x.strip() for x in options.split(",") if x.strip()]
+    choices = [
+        x.strip()
+        for x in options.split(",")
+        if x.strip()
+    ]
 
     if len(choices) < 2:
-        await ctx.send("give me at least 2 options 😭")
+        await ctx.send(
+            "give me at least 2 options 😭"
+        )
         return
 
     choice = random.choice(choices)
-    await ctx.send(f"i choose **{choice}** 👀")
+
+    await ctx.send(
+        f"i choose **{choice}** 👀"
+    )
 
 
 @bot.command()
@@ -275,7 +313,9 @@ async def roast(ctx, member: discord.Member = None):
         "bro's main character arc got cancelled"
     ]
 
-    await ctx.send(f"{member.mention} {random.choice(roasts)}")
+    await ctx.send(
+        f"{member.mention} {random.choice(roasts)}"
+    )
 
 
 @bot.command()
@@ -295,7 +335,9 @@ async def compliment(ctx, member: discord.Member = None):
         "absolute W"
     ]
 
-    await ctx.send(f"{member.mention} {random.choice(compliments)}")
+    await ctx.send(
+        f"{member.mention} {random.choice(compliments)}"
+    )
 
 
 @bot.command()
@@ -313,6 +355,13 @@ async def wyr(ctx):
         "would you rather fight 100 duck-sized horses or 1 horse-sized duck? 💀"
     ]
 
-    await ctx.send(random.choice(questions))
+    await ctx.send(
+        random.choice(questions)
+    )
+
+
+# =========================
+# START BOT
+# =========================
 
 bot.run(os.environ["DISCORD_TOKEN"])
