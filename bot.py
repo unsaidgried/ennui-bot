@@ -184,5 +184,135 @@ async def on_message(message):
 # =========================
 # START BOT
 # =========================
+# =========================
+# FUN COMMANDS
+# =========================
+
+@bot.command()
+async def coinflip(ctx):
+    result = random.choice(["heads 🪙", "tails 🪙"])
+    await ctx.send(f"it's **{result}**")
+
+
+@bot.command()
+async def dice(ctx):
+    number = random.randint(1, 6)
+    await ctx.send(f"🎲 you rolled **{number}**")
+
+
+@bot.command()
+async def rate(ctx, *, thing):
+    rating = random.randint(1, 10)
+    await ctx.send(f"i rate **{thing}** a **{rating}/10** 😭")
+
+
+@bot.command()
+async def ship(ctx, member1: discord.Member, member2: discord.Member):
+    percentage = random.randint(0, 100)
+
+    if percentage >= 80:
+        response = "THEY'RE ACTUALLY COOKING 🔥❤️"
+    elif percentage >= 50:
+        response = "hmm there's potential 👀"
+    elif percentage >= 20:
+        response = "it's looking rough 😭"
+    else:
+        response = "bro just stay friends 💀"
+
+    await ctx.send(
+        f"💘 **{member1.display_name} + {member2.display_name}** = "
+        f"**{percentage}%**\n{response}"
+    )
+
+
+@bot.command()
+async def eightball(ctx, *, question):
+    answers = [
+        "yes.",
+        "no.",
+        "probably 😭",
+        "absolutely not 💀",
+        "maybe 👀",
+        "100%",
+        "ask me later",
+        "i wouldn't count on it 😭",
+        "it's looking good",
+        "bro idk 😭",
+        "the answer is hidden...",
+        "tung tung says yes 🗿",
+        "tung tung says no 💀"
+    ]
+
+    await ctx.send(f"🎱 **{random.choice(answers)}**")
+
+
+@bot.command()
+async def choose(ctx, *, options):
+    choices = [x.strip() for x in options.split(",") if x.strip()]
+
+    if len(choices) < 2:
+        await ctx.send("give me at least 2 options 😭")
+        return
+
+    choice = random.choice(choices)
+    await ctx.send(f"i choose **{choice}** 👀")
+
+
+@bot.command()
+async def roast(ctx, member: discord.Member = None):
+    member = member or ctx.author
+
+    roasts = [
+        "bro's WiFi signal has more personality 😭",
+        "you really woke up and chose to be like this 💀",
+        "bro is built like a loading screen",
+        "even Tung Tung doesn't know what to say 😭",
+        "respectfully... log off 🙏",
+        "your aura needs an update",
+        "bro has negative aura points 💀",
+        "i've seen NPCs with more dialogue 😭",
+        "you are the reason the mute button exists",
+        "bro's main character arc got cancelled"
+    ]
+
+    await ctx.send(f"{member.mention} {random.choice(roasts)}")
+
+
+@bot.command()
+async def compliment(ctx, member: discord.Member = None):
+    member = member or ctx.author
+
+    compliments = [
+        "you're actually cool ngl 🫶",
+        "your aura is immaculate 🔥",
+        "you seem like a genuinely good person",
+        "certified W human 🫡",
+        "you're carrying the server fr",
+        "10/10 vibes",
+        "you've got elite energy 😭🔥",
+        "Tung Tung approves of you 🗿",
+        "you're more awesome than you realize",
+        "absolute W"
+    ]
+
+    await ctx.send(f"{member.mention} {random.choice(compliments)}")
+
+
+@bot.command()
+async def wyr(ctx):
+    questions = [
+        "would you rather be able to fly or become invisible? 👀",
+        "would you rather have unlimited money or unlimited free time?",
+        "would you rather live in the ocean or in space? 🌊🚀",
+        "would you rather never sleep again or never eat again?",
+        "would you rather know your future or change your past?",
+        "would you rather be famous or completely anonymous?",
+        "would you rather have super strength or super speed?",
+        "would you rather lose your phone or your wallet? 😭",
+        "would you rather always be 10 minutes late or 20 minutes early?",
+        "would you rather fight 100 duck-sized horses or 1 horse-sized duck? 💀"
+    ]
+
+    await ctx.send(random.choice(questions))
 
 bot.run(os.environ["DISCORD_TOKEN"])
