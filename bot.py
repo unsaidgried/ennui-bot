@@ -1,4 +1,5 @@
 import os
+import random
 import discord
 from discord.ext import commands
 
@@ -7,19 +8,81 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix=";", intents=intents)
 
+
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
+
+
+# =========================
+# BASIC COMMANDS
+# =========================
 
 @bot.command()
 async def ping(ctx):
     await ctx.send("Pong! 🏓")
 
+
 @bot.command()
 async def hello(ctx):
     await ctx.send(f"yo {ctx.author.mention} 👋")
 
-bot.run(os.environ["DISCORD_TOKEN"])
+
+# =========================
+# SAY COMMAND
+# =========================
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def say(ctx, *, message):
+    await ctx.message.delete()
+    await ctx.send(message)
+
+
+# =========================
+# AVATAR COMMAND
+# =========================
+
+@bot.command()
+async def avatar(ctx, member: discord.Member = None):
+    member = member or ctx.author
+
+    embed = discord.Embed(
+        title=f"{member.display_name}'s avatar",
+        color=discord.Color.blurple()
+    )
+
+    embed.set_image(url=member.display_avatar.url)
+
+    await ctx.send(embed=embed)
+
+
+# =========================
+# SERVER ICON COMMAND
+# =========================
+
+@bot.command()
+async def servericon(ctx):
+    icon = ctx.guild.icon
+
+    if icon:
+        embed = discord.Embed(
+            title=f"{ctx.guild.name}'s server icon",
+            color=discord.Color.blurple()
+        )
+
+        embed.set_image(url=icon.url)
+
+        await ctx.send(embed=embed)
+
+    else:
+        await ctx.send("this server doesn't have an icon 😭")
+
+
+# =========================
+# TUNG TUNG RESPONSES
+# =========================
+
 responses = [
     "lmao 😭 what you been doing today?",
     "real 😭 tell me more",
@@ -89,34 +152,37 @@ responses = [
     "tung tung understands 🫡",
     "tung tung agrees 😭🙏"
 ]
-@bot.command()
-@commands.has_permissions(administrator=True)
-async def say(ctx, *, message):
-    await ctx.message.delete()
-    await ctx.send(message)
-    @bot.command()
-async def avatar(ctx, member: discord.Member = None):
-    member = member or ctx.author
-
-    embed = discord.Embed(
-        title=f"{member.display_name}'s avatar",
-        color=discord.Color.blurple()
-    )
-    embed.set_image(url=member.display_avatar.url)
-
-    await ctx.send(embed=embed)
 
 
-@bot.command()
-async def servericon(ctx):
-    icon = ctx.guild.icon
+# =========================
+# TUNG TUNG CONVERSATION
+# =========================
 
-    if icon:
-        embed = discord.Embed(
-            title=f"{ctx.guild.name}'s server icon",
-            color=discord.Color.blurple()
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+
+    content = message.content.lower()
+
+    # Start conversation with "tung tung" + bot mention
+    if bot.user in message.mentions and "tung tung" in content:
+        await message.channel.send(
+            f"tung tung {message.author.mention} 😭 what's up?"
         )
-        embed.set_image(url=icon.url)
-        await ctx.send(embed=embed)
-    else:
-        await ctx.send("this server doesn't have an icon 😭")
+
+    # Continue conversation when someone replies to the bot
+    elif message.reference and message.reference.resolved:
+        replied_message = message.reference.resolved
+
+        if replied_message.author == bot.user:
+            await message.channel.send(random.choice(responses))
+
+    await bot.process_commands(message)
+
+
+# =========================
+# START BOT
+# =========================
+
+bot.run(os.environ["DISCORD_TOKEN"])
