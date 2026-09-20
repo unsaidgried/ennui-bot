@@ -94,3 +94,29 @@ responses = [
 async def say(ctx, *, message):
     await ctx.message.delete()
     await ctx.send(message)
+    @bot.command()
+async def avatar(ctx, member: discord.Member = None):
+    member = member or ctx.author
+
+    embed = discord.Embed(
+        title=f"{member.display_name}'s avatar",
+        color=discord.Color.blurple()
+    )
+    embed.set_image(url=member.display_avatar.url)
+
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+async def servericon(ctx):
+    icon = ctx.guild.icon
+
+    if icon:
+        embed = discord.Embed(
+            title=f"{ctx.guild.name}'s server icon",
+            color=discord.Color.blurple()
+        )
+        embed.set_image(url=icon.url)
+        await ctx.send(embed=embed)
+    else:
+        await ctx.send("this server doesn't have an icon 😭")
