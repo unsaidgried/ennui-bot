@@ -89,3 +89,8 @@ responses = [
     "tung tung understands 🫡",
     "tung tung agrees 😭🙏"
 ]
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def say(ctx, *, message):
+    await ctx.message.delete()
+    await ctx.send(message)
